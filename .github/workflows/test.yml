@@ -25,7 +25,7 @@ jobs:
     - run: buildozer --help
     - run: buildozer init
     - name: SDK, NDK and p4a download
-      run: |
+      run: yes |
         sed -i.bak "s/android.accept_sdk_license = True" buildozer.spec
         sed -i.bak "s/p4a.branch = develop" buildozer.spec
         buildozer android p4a -- --help
