@@ -32,6 +32,12 @@ jobs:
           path: .buildozer
           key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
 
+      - name: Add Aidl
+        uses: terminal
+        id: aidl
+        with:
+          command: sudo apt-get install aidl
+
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
