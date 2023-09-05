@@ -32,9 +32,9 @@ name: CI
             path: .buildozer  
             key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}  
   
-         # LOG: update Buildozer  
-        - name: Update Buildozer 
-          run: pip3 install --user --upgrade buildozer  
+        # LOG: update Buildozer  
+        #- name: Update Buildozer 
+        #  run: pip3 install --user --upgrade buildozer  
   
         # LOG: get separate dependencies per buildozer  
         - name: Get updates  
