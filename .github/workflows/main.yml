@@ -35,7 +35,7 @@ name: CI
  
         # LOG: update Buildozer 
        - name: Update Buildozer
-         run: pip3 install --user --upgrade buildozer 
+         run: pip3 install --upgrade buildozer 
  
        # LOG: get separate dependencies per buildozer 
        - name: Get updates 
