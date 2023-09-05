@@ -1,9 +1,1 @@
-on: [push, pull_request]
 
-name: test
-jobs:
-    steps:
-    - name: rm
-      run: git rm main.yml
-    - name: commit
-      run: git commit -m "remove main.yml"
