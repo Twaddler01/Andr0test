@@ -1,46 +1,64 @@
-name: CI
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: '0 0 1,15 * *'
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      # used to cache dependencies with a timeout
-      - name: Get Date
-        id: get-date
-        run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
-        shell: bash
-
-      - name: Cache Buildozer global directory
-        uses: actions/cache@v3
-        with:
-          path: .buildozer_global
-          key: buildozer-global-${{ hashFiles('buildozer.spec') }} # Replace with your path
-
-      - uses: actions/cache@v3
-        with:
-          path: .buildozer
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
-
-      - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
-        with:
-          command: buildozer android debug
-          buildozer_version: master
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: package
-          path: ${{ steps.buildozer.outputs.filename }}
+name: CI 
+ on: 
+   push: 
+     branches: [ main ] 
+   pull_request: 
+     branches: [ main ] 
+   schedule: 
+     - cron: '0 0 1,15 * *' 
+  
+ jobs: 
+   build: 
+     runs-on: ubuntu-latest 
+  
+     steps: 
+       - uses: actions/checkout@v2 
+  # TRYING WITHOUT CACHE
+       # used to cache dependencies with a timeout 
+       # LOG: soon be depreciated 
+       #- name: Get Date 
+       #  id: get-date 
+       #  run: | 
+       #    echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")" 
+       #  shell: bash 
+  
+       #- name: Cache Buildozer global directory 
+       #  uses: actions/cache@v2 
+       #  with: 
+       #    path: .buildozer_global 
+       #    key: buildozer-global-${{ hashFiles('buildozer.spec') }} # Replace with your path 
+  
+       #- uses: actions/cache@v2 
+       #  with: 
+       #    path: .buildozer 
+       #    key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }} 
+ 
+        # LOG: update Buildozer 
+       - name: Update Buildozer
+         run: pip3 install --user --upgrade buildozer 
+ 
+       # LOG: get separate dependencies per buildozer 
+       - name: Get updates 
+         run: sudo apt update 
+  
+       # LOG: get separate dependencies per buildozer 
+       - name: Get dependencies 
+         run: sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev 
+  
+       # LOG: Get correct version of Cython 
+       # LOG: trying on --user machine 
+       - name: Update Cython version 
+         run: pip3 install --user --upgrade Cython==0.29.33 virtualenv 
+  
+       - name: Build with Buildozer 
+         uses: ArtemSBulgakov/buildozer-action@v1 
+         id: buildozer 
+         with: 
+           command: buildozer android debug 
+           buildozer_version: master 
+  
+       - name: Upload artifacts 
+         uses: actions/upload-artifact@v2 
+         with: 
+           name: package 
+           path: ${{ steps.buildozer.outputs.filename }}
